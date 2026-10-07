@@ -1,0 +1,374 @@
+{
+  "name": "ModelAI Sepsis 2019 Frozen Symbolic Specification",
+  "version": "1.0",
+  "dataset": "PhysioNet/CinC Challenge 2019",
+  "prediction_target": "SepsisLabel at each hour; labels are shifted 6 h before clinical sepsis onset by the challenge organizers.",
+  "design_principles": [
+    "Only current and past measurements may be used at hour t.",
+    "Missing evidence is represented explicitly as UNKNOWN, never as inactive/normal.",
+    "Baseline and ModelAI arms receive identical raw values, observation masks, and time-since-last-observation features.",
+    "Symbolic thresholds are frozen before held-out evaluation.",
+    "Literature-backed clinical thresholds are separated from engineering-only temporal persistence rules.",
+    "State transitions require fresh/evaluable evidence; UNKNOWN cannot count as a positive confirmation."
+  ],
+  "alerts": [
+    {
+      "id": "A01",
+      "domain": "hemodynamic",
+      "name": "SBP_LOW_QSOFA",
+      "rule": "SBP <= 100",
+      "source_basis": "Sepsis-3 qSOFA",
+      "evidence_required": [
+        "SBP"
+      ]
+    },
+    {
+      "id": "A02",
+      "domain": "hemodynamic",
+      "name": "MAP_LOW",
+      "rule": "MAP < 70",
+      "source_basis": "SOFA cardiovascular score >=1",
+      "evidence_required": [
+        "MAP"
+      ]
+    },
+    {
+      "id": "A03",
+      "domain": "hemodynamic",
+      "name": "MAP_SEVERE",
+      "rule": "MAP < 65",
+      "source_basis": "Septic-shock perfusion target / operational severity threshold",
+      "evidence_required": [
+        "MAP"
+      ]
+    },
+    {
+      "id": "A04",
+      "domain": "hemodynamic",
+      "name": "MAP_FALLING",
+      "rule": "current MAP < 75 AND drop >=10 mmHg from max of previous 3 observed hours",
+      "source_basis": "engineering trajectory rule; not a diagnostic criterion",
+      "evidence_required": [
+        "MAP"
+      ]
+    },
+    {
+      "id": "A05",
+      "domain": "respiratory",
+      "name": "RR_QSOFA",
+      "rule": "Resp >= 22",
+      "source_basis": "Sepsis-3 qSOFA",
+      "evidence_required": [
+        "Resp"
+      ]
+    },
+    {
+      "id": "A06",
+      "domain": "respiratory",
+      "name": "HYPOXEMIA",
+      "rule": "O2Sat < 92",
+      "source_basis": "engineering physiologic severity rule",
+      "evidence_required": [
+        "O2Sat"
+      ]
+    },
+    {
+      "id": "A07",
+      "domain": "respiratory",
+      "name": "OXYGENATION_STRESS",
+      "rule": "FiO2 >= 0.40 AND O2Sat < 94",
+      "source_basis": "engineering physiologic conjunction",
+      "evidence_required": [
+        "FiO2",
+        "O2Sat"
+      ]
+    },
+    {
+      "id": "A08",
+      "domain": "inflammatory",
+      "name": "TEMP_DYSREG",
+      "rule": "Temp > 38 OR Temp < 36",
+      "source_basis": "SIRS criterion",
+      "evidence_required": [
+        "Temp"
+      ]
+    },
+    {
+      "id": "A09",
+      "domain": "inflammatory",
+      "name": "WBC_DYSREG",
+      "rule": "WBC > 12 OR WBC < 4",
+      "source_basis": "SIRS criterion",
+      "evidence_required": [
+        "WBC"
+      ]
+    },
+    {
+      "id": "A10",
+      "domain": "perfusion_metabolic",
+      "name": "LACTATE_ELEVATED",
+      "rule": "Lactate > 2",
+      "source_basis": "Sepsis-3 septic-shock metabolic criterion (dataset values empirically align with mmol/L scale)",
+      "evidence_required": [
+        "Lactate"
+      ]
+    },
+    {
+      "id": "A11",
+      "domain": "perfusion_metabolic",
+      "name": "LACTATE_RISING",
+      "rule": "increase >=0.5 from most recent prior observed lactate within 6 h",
+      "source_basis": "engineering trajectory rule",
+      "evidence_required": [
+        "Lactate"
+      ]
+    },
+    {
+      "id": "A12",
+      "domain": "renal",
+      "name": "CREATININE_S1",
+      "rule": "Creatinine >= 1.2",
+      "source_basis": "SOFA renal score >=1",
+      "evidence_required": [
+        "Creatinine"
+      ]
+    },
+    {
+      "id": "A13",
+      "domain": "renal",
+      "name": "CREATININE_S2",
+      "rule": "Creatinine >= 2.0",
+      "source_basis": "SOFA renal score >=2",
+      "evidence_required": [
+        "Creatinine"
+      ]
+    },
+    {
+      "id": "A14",
+      "domain": "renal",
+      "name": "CREATININE_RISING",
+      "rule": "increase >=0.3 mg/dL from minimum prior value in previous 24 h",
+      "source_basis": "engineering conservative AKI-like trajectory rule; 24 h window chosen to fit hourly data",
+      "evidence_required": [
+        "Creatinine"
+      ]
+    },
+    {
+      "id": "A15",
+      "domain": "hepatic",
+      "name": "BILIRUBIN_S1",
+      "rule": "Bilirubin_total >= 1.2",
+      "source_basis": "SOFA liver score >=1",
+      "evidence_required": [
+        "Bilirubin_total"
+      ]
+    },
+    {
+      "id": "A16",
+      "domain": "hepatic",
+      "name": "BILIRUBIN_S2",
+      "rule": "Bilirubin_total >= 2.0",
+      "source_basis": "SOFA liver score >=2",
+      "evidence_required": [
+        "Bilirubin_total"
+      ]
+    },
+    {
+      "id": "A17",
+      "domain": "hematologic",
+      "name": "PLATELETS_S1",
+      "rule": "Platelets < 150",
+      "source_basis": "SOFA coagulation score >=1",
+      "evidence_required": [
+        "Platelets"
+      ]
+    },
+    {
+      "id": "A18",
+      "domain": "hematologic",
+      "name": "PLATELETS_S2",
+      "rule": "Platelets < 100",
+      "source_basis": "SOFA coagulation score >=2",
+      "evidence_required": [
+        "Platelets"
+      ]
+    },
+    {
+      "id": "A19",
+      "domain": "acid_base",
+      "name": "METABOLIC_ACIDOSIS",
+      "rule": "pH < 7.35 AND HCO3 < 22",
+      "source_basis": "engineering physiologic conjunction",
+      "evidence_required": [
+        "pH",
+        "HCO3"
+      ]
+    },
+    {
+      "id": "A20",
+      "domain": "inflammatory",
+      "name": "SIRS_PAIR",
+      "rule": "at least 2 evaluable active among Temp dysregulation, HR > 90, Resp > 20 or PaCO2 < 32, WBC dysregulation",
+      "source_basis": "historical SIRS construct; used only as an alert, not as sepsis definition",
+      "evidence_required": [
+        "Temp",
+        "HR",
+        "Resp",
+        "PaCO2",
+        "WBC"
+      ]
+    }
+  ],
+  "state_machines": [
+    {
+      "id": "SM1",
+      "name": "Hemodynamic_Perfusion",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "AT_RISK",
+        "DYSFUNCTION",
+        "SEVERE",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "AT_RISK": "A01 or A02 or A04",
+        "DYSFUNCTION": "2-of-last-3 evaluable hours with A02 or A03, or concurrent A01+A04",
+        "SEVERE": "A03 plus A10 when both are evaluable, or persistent A03 in 2-of-last-3 evaluable hours",
+        "RECOVERING": "previous DYSFUNCTION/SEVERE and 2 consecutive evaluable hours without A02/A03/A04"
+      }
+    },
+    {
+      "id": "SM2",
+      "name": "Respiratory",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "AT_RISK",
+        "DYSFUNCTION",
+        "SEVERE",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "AT_RISK": "A05 or A06",
+        "DYSFUNCTION": "persistent A05 or A06 in 2-of-last-3 evaluable hours, or A07",
+        "SEVERE": "A07 plus A06, or metabolic/respiratory acidosis with respiratory abnormality",
+        "RECOVERING": "2 consecutive evaluable hours without active respiratory alerts after dysfunction"
+      }
+    },
+    {
+      "id": "SM3",
+      "name": "Renal",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "AT_RISK",
+        "DYSFUNCTION",
+        "SEVERE",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "AT_RISK": "A12",
+        "DYSFUNCTION": "A13 or A14",
+        "SEVERE": "Creatinine >=3.5 when evaluable, or persistent A13+A14",
+        "RECOVERING": "falling creatinine with no A14 across two fresh observations"
+      }
+    },
+    {
+      "id": "SM4",
+      "name": "Inflammatory_Host_Response",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "AT_RISK",
+        "DYSFUNCTION",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "AT_RISK": "A08 or A09",
+        "DYSFUNCTION": "A20 or persistence of A08/A09 across fresh observations",
+        "RECOVERING": "two fresh/evaluable observations without inflammatory alerts"
+      }
+    },
+    {
+      "id": "SM5",
+      "name": "Hepatic_Hematologic",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "AT_RISK",
+        "DYSFUNCTION",
+        "SEVERE",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "AT_RISK": "A15 or A17",
+        "DYSFUNCTION": "A16 or A18",
+        "SEVERE": "Bilirubin_total >=6 or Platelets <50 when evaluable",
+        "RECOVERING": "improving fresh measurements across two observations"
+      }
+    },
+    {
+      "id": "SM6",
+      "name": "Metabolic_AcidBase",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "AT_RISK",
+        "DYSFUNCTION",
+        "SEVERE",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "AT_RISK": "A10 or A19",
+        "DYSFUNCTION": "A10+A19 or A11",
+        "SEVERE": "Lactate >=4 when evaluable, or persistent combined metabolic abnormalities",
+        "RECOVERING": "two fresh observations showing normalization/improvement"
+      }
+    },
+    {
+      "id": "SM7",
+      "name": "MultiOrgan_Sepsis_Trajectory",
+      "states": [
+        "UNKNOWN",
+        "STABLE",
+        "ISOLATED_ABNORMALITY",
+        "MULTISYSTEM_CONCERN",
+        "PROGRESSIVE_MULTIORGAN",
+        "HIGH_RISK",
+        "RECOVERING"
+      ],
+      "entry_logic": {
+        "ISOLATED_ABNORMALITY": "one domain machine >=AT_RISK",
+        "MULTISYSTEM_CONCERN": "two domain machines >=AT_RISK within current/previous 2 h",
+        "PROGRESSIVE_MULTIORGAN": "two or more domain machines worsen state within previous 6 h OR one dysfunctional domain plus a second newly abnormal domain",
+        "HIGH_RISK": "three or more domain machines >=DYSFUNCTION, or progressive multiorgan plus elevated lactate/hypotension",
+        "RECOVERING": "prior high-risk/progressive state with net state improvement across >=2 domain machines and no new worsening transition"
+      }
+    }
+  ],
+  "trajectory_features": [
+    "current state per state machine",
+    "state dwell time",
+    "time since last transition",
+    "transition count in previous 6 h and 24 h",
+    "worsening-transition count",
+    "recovering-transition count",
+    "domain count at-or-above AT_RISK",
+    "domain count at-or-above DYSFUNCTION",
+    "trajectory direction {-1 improving,0 stable,+1 worsening,UNKNOWN}",
+    "reachable-next-state one-hot under frozen transition graph",
+    "alert persistence counts",
+    "alert evaluability masks"
+  ],
+  "controls": [
+    "raw-only baseline with identical raw measurements, masks, time-since-last-observation, static variables and model backbone",
+    "alerts-only ablation",
+    "current-state ablation",
+    "trajectory-only incremental ablation",
+    "forward-reachable-scenario ablation",
+    "full ModelAI",
+    "within-patient time-shuffled symbolic control",
+    "dimension-matched random/fixed-projection control"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "name": "ModelAI comparator controls",
+  "version": "1.1.1",
+  "frozen_date": "2026-10-06",
+  "GenericTemporal27": {
+    "selection_rule": "Select the 9 dynamic variables with highest non-missing observation density among training-partition patient-hours only; no labels used.",
+    "ordered_variables": [
+      "HR",
+      "MAP",
+      "O2Sat",
+      "SBP",
+      "Resp",
+      "DBP",
+      "Temp",
+      "Glucose",
+      "Potassium"
+    ],
+    "window_hours": 6,
+    "window_rows": "current hour plus previous five hourly rows within the same patient",
+    "feature_order_per_variable": [
+      "rolling_observed_mean",
+      "rolling_observed_range",
+      "least_squares_slope"
+    ],
+    "missing_rules": {
+      "zero_observations": "mean, range, slope = NaN",
+      "one_observation": "mean=value; range=0; slope=NaN",
+      "two_or_more_observations": "mean/range over finite observed values; OLS slope against actual hourly indices"
+    },
+    "feature_ordering": "[mean, range, slope] for each variable in ordered_variables, giving G01-G27",
+    "causal": true,
+    "patient_boundary_safe": true,
+    "uses_labels": false
+  },
+  "Noise27": {
+    "generator": "numpy.random.default_rng",
+    "seed": 20261006,
+    "distribution": "Normal(0,1)",
+    "shape": "(N_rows,27)",
+    "dtype": "float32",
+    "generation": "single frozen matrix in canonical full-cohort row order, then subset by the identical patient split",
+    "uses_labels": false
+  },
+  "learner": {
+    "library": "LightGBM",
+    "version": "4.6.0",
+    "params": {
+      "objective": "binary",
+      "n_estimators": 100,
+      "learning_rate": 0.05,
+      "num_leaves": 31,
+      "min_child_samples": 80,
+      "colsample_bytree": 1.0,
+      "subsample": 0.9,
+      "subsample_freq": 1,
+      "reg_lambda": 1.0
+    },
+    "fit_seeds": [
+      11,
+      23,
+      42,
+      73,
+      101
+    ],
+    "class_weighting": "scale_pos_weight=(n_negative/n_positive) computed from training rows"
+  },
+  "environment": {
+    "numpy": "2.3.5",
+    "scikit_learn": "1.8.0",
+    "python": "3.13.5"
+  },
+  "package_note": "Comparator semantics unchanged; version increment reflects corrected end-to-end portable archive integration."
+}

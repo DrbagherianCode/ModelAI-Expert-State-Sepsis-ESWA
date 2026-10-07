@@ -1,0 +1,23 @@
+{
+  "title": "ModelAI ESWA End-to-End Reproducibility Archive",
+  "upload_type": "software",
+  "description": "End-to-end reproducibility package v1.1.1 for “Auditable Expert State-Machine Representations for Early Sepsis Prediction.” The pipeline reconstructs all analysis intermediates directly from the public PhysioNet/CinC 2019 raw PSV files, uses portable command-line paths, verifies canonical arrays before training, and reproduces model fitting, calibration, utility, bootstrap, cross-site, and repeated-split analyses.",
+  "creators": [
+    {
+      "name": "Bagherian Kasgari, Abbas",
+      "affiliation": "ModelAI Ltd",
+      "email": "DrBagherian@ModelAI.cloud"
+    }
+  ],
+  "version": "1.1.1",
+  "publication_date": "2026-10-06",
+  "keywords": [
+    "expert systems",
+    "sepsis prediction",
+    "finite-state machine",
+    "temporal representation",
+    "reproducibility",
+    "PhysioNet"
+  ],
+  "notes": "Archive the exact frozen v1.1.1 release. Raw PhysioNet source data are not redistributed."
+}

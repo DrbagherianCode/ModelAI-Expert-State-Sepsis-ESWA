@@ -1,0 +1,53 @@
+{
+  "name": "ModelAI Sepsis 2019 Compact Trajectory Layer",
+  "version": "2.0-exploratory",
+  "status": "Designed after Stage-3 results; therefore exploratory and not a pristine confirmatory specification.",
+  "causality_rule": "Every feature at hour t uses only state/alert information available at or before hour t.",
+  "base_state_inputs": [
+    "Seven current expert state-machine states"
+  ],
+  "candidate_trajectory_bank": {
+    "lagged_state_rank": ["1h", "3h", "6h"],
+    "state_rank_change": ["1h", "3h", "6h"],
+    "rolling_state_summary": ["6h maximum rank", "6h mean rank"],
+    "aggregate_features": [
+      "number of organ-domain machines at or above AT_RISK",
+      "number at or above DYSFUNCTION",
+      "number at SEVERE",
+      "3h worsening velocity",
+      "6h worsening velocity",
+      "3h improving velocity",
+      "6h mean multi-domain burden",
+      "12h mean multi-domain burden",
+      "current concurrent worsening-domain count",
+      "maximum concurrent worsening over 6h",
+      "new abnormal-domain activations over 6h",
+      "sum of six-hour transition counts"
+    ]
+  },
+  "compact20_selected_on_validation_only": {
+    "selection_metric": "validation AUPRC",
+    "features": [
+      "SM7 lag rank at 1h",
+      "SM7 lag rank at 3h",
+      "SM7 lag rank at 6h",
+      "SM7 rank change at 1h",
+      "SM7 rank change at 3h",
+      "SM7 rank change at 6h",
+      "SM7 6h maximum rank",
+      "SM7 6h mean rank",
+      "12 aggregate trajectory features"
+    ]
+  },
+  "forward_v2": {
+    "features": [
+      "projected 3h state rank for each state machine based on current state, recent worsening, and persistence",
+      "per-machine escalation-pressure indicator",
+      "projected dysfunctional-domain count",
+      "projected severe-domain count",
+      "projected multi-organ high-risk indicator",
+      "unknown-domain count"
+    ],
+    "result": "Did not improve the primary AUPRC in Stage 4 and is not retained as evidence of added predictive value."
+  }
+}

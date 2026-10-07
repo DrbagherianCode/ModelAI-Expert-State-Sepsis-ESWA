@@ -1,0 +1,25 @@
+Copyright (c) 2026 Abbas Bagherian Kasgari / ModelAI Ltd
+
+All rights reserved.
+
+This repository is made publicly available for scholarly review, transparency,
+and reproducibility of the associated research article.
+
+You may download, inspect, and execute the code for non-commercial research,
+verification, and academic reproducibility purposes, subject to the terms and
+licenses of all third-party dependencies and datasets.
+
+No rights are granted to redistribute, sublicense, sell, commercialize, or
+incorporate the ModelAI technology, specifications, or code into commercial
+products or services without prior written permission from the copyright holder.
+
+The PhysioNet/CinC Challenge 2019 source data are NOT included in this
+repository and remain subject to the terms of the original PhysioNet resource.
+
+This notice does not waive, limit, dedicate, or otherwise affect any patent,
+patent application, trade-secret, trademark, or other intellectual-property
+rights associated with ModelAI or related technology.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.

@@ -1,0 +1,9 @@
+name: modelai-eswa-repro-1.1.0
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13.5
+  - numpy=2.3.5
+  - pandas=2.2.3
+  - scikit-learn=1.8.0
+  - lightgbm=4.6.0

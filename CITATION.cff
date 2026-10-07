@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this archive, please cite the associated manuscript and this reproducibility package."
+title: "ModelAI ESWA End-to-End Reproducibility Archive"
+version: 1.1.1
+date-released: 2026-10-06
+authors:
+  - family-names: "Bagherian Kasgari"
+    given-names: "Abbas"
+    email: "DrBagherian@ModelAI.cloud"
+keywords:
+  - expert systems
+  - sepsis prediction
+  - finite-state machines
+  - temporal representation
+  - reproducibility

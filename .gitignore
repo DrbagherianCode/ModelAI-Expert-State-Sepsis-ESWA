@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local/source data (do not commit PhysioNet raw data)
+data/
+data_raw/
+training_setA/
+training_setB/
+training_setA.zip
+training_setB.zip
+*.psv
+
+# Generated large arrays / intermediates
+work/
+qa_work/
+results_reproduced/
+*.npy
+*.npz
+
+# Secrets / local environment
+.env
+.env.*
+*.key
+*.pem
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Temporary / logs
+*.log
+tmp/
+temp/
